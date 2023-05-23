@@ -13,7 +13,6 @@ public class Main {
 
         List<Cluster> clusters = algo.formCluster();
         for(Cluster cluster: clusters){
-//            System.out.println(cluster);
             cluster.printDrones();
         }
     }
