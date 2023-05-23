@@ -25,11 +25,11 @@ class Drone {
     @Override
     public String toString() {
         return "Drone{" +
-                "id=" + id +
-                ", lat=" + lat +
-                ", lon=" + lon +
-                ", alt=" + alt +
-                ", energy=" + energy +
+                "id = " + id +
+                ", lat = " + lat +
+                ", lon = " + lon +
+                ", alt = " + alt +
+                ", energy = " + energy +
                 '}';
     }
 }
@@ -235,7 +235,6 @@ public class BOLDAlgorithm {
         Drone leader = bold.runBOLDAlgorithm(drones, iterations);
 
         System.out.println("Leader = " + leader);
-
 
 
         drones.sort((a, b) -> {

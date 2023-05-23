@@ -31,15 +31,15 @@ public class Drone {
     @Override
     public String toString() {
         return "Drone{" +
-                "id=" + id +
-                ", clusterId=" + clusterId +
-                ", alt=" + alt +
-                ", lat=" + lat +
-                ", lon=" + lon +
-                ", energy=" + energy +
-                ", trustValue=" + trustValue +
-                ", PDR=" + PDR +
-                ", transmissionDelay=" + transmissionDelay +
+                "id = " + id +
+                ", clusterId = " + clusterId +
+                ", alt = " + alt +
+                ", lat = " + lat +
+                ", lon = " + lon +
+                ", energy = " + energy +
+                ", trustValue = " + trustValue +
+                ", PDR = " + PDR +
+                ", transmissionDelay = " + transmissionDelay +
                 '}';
     }
 
