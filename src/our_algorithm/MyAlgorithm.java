@@ -87,9 +87,6 @@ public class MyAlgorithm {
         return clusters;
     }
 
-    // Cluster head selection algorithm
-
-
     private Map<Drone, Map<Drone, Double>> getDistanceMatrix(List<Drone> drones) {
         this.distanceMatrix = new HashMap<>();
         int n = drones.size();

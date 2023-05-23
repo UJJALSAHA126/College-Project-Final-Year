@@ -12,6 +12,9 @@ public class Main {
         MyAlgorithm algo = new MyAlgorithm(drones);
 
         List<Cluster> clusters = algo.formCluster();
-
+        for(Cluster cluster: clusters){
+//            System.out.println(cluster);
+            cluster.printDrones();
+        }
     }
 }

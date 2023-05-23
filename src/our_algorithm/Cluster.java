@@ -46,9 +46,8 @@ public class Cluster {
     @Override
     public String toString() {
         return "Cluster{" +
-                "clusterId=" + clusterId +
-                ", leaderID=" + leader.id +
-                ", Number Of Drones=" + drones.size() +
+                "clusterId = " + clusterId +
+                ", Number Of Drones = " + drones.size() +
                 '}';
     }
 
