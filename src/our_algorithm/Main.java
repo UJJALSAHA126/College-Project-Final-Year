@@ -12,13 +12,6 @@ public class Main {
         MyAlgorithm algo = new MyAlgorithm(drones);
 
         List<Cluster> clusters = algo.formCluster();
-//        List<List<Drone>> clusterHeads = new ArrayList<>();
-
-        for (Cluster cluster : clusters) {
-//            clusterHeads.add(algo.getClusterHead(cluster));
-            algo.getClusterHead(cluster);
-            System.out.println(cluster);
-        }
 
     }
 }
