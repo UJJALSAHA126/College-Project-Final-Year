@@ -170,12 +170,12 @@ public class MyAlgorithm {
     }
 
     private static double euclideanDistanceOfDrones(Drone drone1, Drone drone2) {
-        double x1 = drone1.lat;
-        double y1 = drone1.lon;
+        double x1 = drone1.lon;
+        double y1 = drone1.lat;
         double z1 = drone1.alt;
 
-        double x2 = drone2.lat;
-        double y2 = drone2.lon;
+        double x2 = drone2.lon;
+        double y2 = drone2.lat;
         double z2 = drone2.alt;
 
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2) + Math.pow(z2 - z1, 2));
