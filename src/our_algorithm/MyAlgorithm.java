@@ -57,7 +57,7 @@ public class MyAlgorithm {
 
         // Formation Of Clusters
         List<Cluster> clusters = new ArrayList<>();
-        int clusterId = -1;
+        int clusterId = 0;
 
         for (Drone drone : drones) {
             // If the drone is already processed then skip this drone
