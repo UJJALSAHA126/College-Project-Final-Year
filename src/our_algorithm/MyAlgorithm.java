@@ -22,7 +22,7 @@ public class MyAlgorithm {
     // TODO
     private int getDronesPerCluster(int numOfClusters, List<Drone> drones) {
         // TODO
-        return 1;
+        return 3;
     }
 
     private void sortDrones(List<Drone> drones) {
@@ -89,7 +89,6 @@ public class MyAlgorithm {
 
     // Cluster Head Selection
     public List<Drone> selectClusterHead(Cluster cluster) {
-
         int n = cluster.size();
         double[][] distanceMatrix = new double[n][n];
 
@@ -116,11 +115,10 @@ public class MyAlgorithm {
         // add from map top two drones
         for (Map.Entry<Double, Integer> entry : mp.entrySet()) {
             if (headOfCluster.size() > 2) break;
-            headOfCluster.add(entry.getValue(), cluster.drones.get(entry.getValue()));
+            headOfCluster.add(cluster.drones.get(entry.getValue()));
         }
 
         return headOfCluster;
-
     }
 
     private Map<Drone, Map<Drone, Double>> getDistanceMatrix(List<Drone> drones) {
@@ -153,6 +151,7 @@ public class MyAlgorithm {
         double x2 = drone2.lat;
         double y2 = drone2.lon;
         double z2 = drone2.alt;
+
         return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2) + pow(z2 - z1, 2));
     }
 }
