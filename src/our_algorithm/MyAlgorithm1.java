@@ -5,11 +5,11 @@ import java.util.*;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
-public class MyAlgorithm {
+public class MyAlgorithm1 {
     private Map<Drone, Map<Drone, Double>> distanceMatrix;
     private List<Drone> drones;
 
-    public MyAlgorithm(List<Drone> drones) {
+    public MyAlgorithm1(List<Drone> drones) {
         this.drones = drones;
     }
 
@@ -86,43 +86,6 @@ public class MyAlgorithm {
 
         return clusters;
     }
-
-    // Cluster Head Selection
-    public List<Drone> selectClusterHead(Cluster cluster) {
-
-        int n = cluster.size();
-        double[][] distanceMatrix = new double[n][n];
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                distanceMatrix[i][j] = euclideanDistanceOfDrones(cluster.drones.get(i), cluster.drones.get(j));
-                distanceMatrix[j][i] = distanceMatrix[i][j];
-            }
-        }
-
-        TreeMap<Double, Integer> mp = new TreeMap<>(Collections.reverseOrder());
-
-        for (int i = 0; i < n; i++) {
-            double sumOfAllDistance = 0.0;
-            for (int j = 0; j < n; j++) {
-                sumOfAllDistance += distanceMatrix[i][j];
-            }
-            double trustValue = cluster.drones.get(i).trustValue;
-            mp.put((trustValue / sumOfAllDistance), i);
-        }
-
-        List<Drone> headOfCluster = new ArrayList<>();
-
-        // add from map top two drones
-        for (Map.Entry<Double, Integer> entry : mp.entrySet()) {
-            if (headOfCluster.size() > 2) break;
-            headOfCluster.add(entry.getValue(), cluster.drones.get(entry.getValue()));
-        }
-
-        return headOfCluster;
-
-    }
-
 
     // Cluster head selection algorithm
     public List<Drone> getClusterHead(Cluster cluster) {
