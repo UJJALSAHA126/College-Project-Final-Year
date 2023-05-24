@@ -1,13 +1,11 @@
 package our_algorithm;
 
 import java.util.*;
-
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
+import java.lang.Math;
 
 public class MyAlgorithm {
     private Map<Drone, Map<Drone, Double>> distanceMatrix;
-    private List<Drone> drones;
+    private final List<Drone> drones;
 
     public MyAlgorithm(List<Drone> drones) {
         this.drones = drones;
@@ -20,52 +18,67 @@ public class MyAlgorithm {
     }
 
     // TODO
-    private int getDronesPerCluster(int numOfClusters, List<Drone> drones) {
+    private int getDronesPerCluster(List<Drone> drones) {
         // TODO
-        return 1;
+        int n = drones.size();
+//        Drone firstDrone = drones.get(0);
+//        List<Double> distanceList = new ArrayList<>(this.distanceMatrix.get(firstDrone).values().stream().toList());
+//
+//        distanceList.sort(Comparator.comparingDouble(o -> o));
+
+        int nSqrt = (int) Math.sqrt(n);
+        if (nSqrt * nSqrt < n) nSqrt++;
+
+        return nSqrt;
     }
 
     private void sortDrones(List<Drone> drones) {
         drones.sort((a, b) -> {
-            if (a.lon != b.lon) return (int) (a.lon - b.lon);
-            if (a.lat != b.lat) return (int) (a.lat - b.lat);
-            return (int) (a.alt - b.alt);
+            if (a.lon != b.lon) return Double.compare(a.lon, b.lon);
+            if (a.lat != b.lat) return Double.compare(b.lat, a.lat);
+            return Double.compare(b.alt, a.alt);
         });
     }
 
-    // Cluster formation algorithm
+    // Cluster formation algorithm By Ujjal
     public List<Cluster> formCluster() {
         // Sort the drones
         sortDrones(drones);
 
-        // Choose how many clusters to be formed
-        int numOfClusters = getNumOfClusters(drones);
-
-        // Choose number of drones in each cluster
-        int dronesPerCluster = getDronesPerCluster(numOfClusters, drones);
-
         // Constructing the distanceMatrix
         this.distanceMatrix = getDistanceMatrix(drones);
 
+        // Choose how many clusters to be formed
+        // int numOfClusters = getNumOfClusters(drones);
+
+        // Choose number of drones in each cluster
+        // TODO
+        int dronesPerCluster = getDronesPerCluster(drones);
+
         // Formation Of Clusters
         List<Cluster> clusters = new ArrayList<>();
-        int clusterId = 0;
+        int clusterId = -1;
 
-        Set<Drone> processedDrones = new HashSet<>();
         for (Drone drone : drones) {
             // If the drone is already processed then skip this drone
-            if (processedDrones.contains(drone)) continue;
-
-            processedDrones.add(drone);
+            if (drone.isInCluster()) continue;
 
             // Create a new cluster
-            Cluster cluster = new Cluster(clusterId++);
+            clusterId++;
+
+            Cluster cluster = new Cluster(clusterId);
             cluster.addDrone(drone);
             drone.setClusterId(cluster.clusterId);
 
             // Store all the drones order by the distance between them
             PriorityQueue<Map.Entry<Drone, Double>> pq = new PriorityQueue<>(Comparator.comparingDouble(Map.Entry::getValue));
-            pq.addAll(distanceMatrix.get(drone).entrySet().stream().toList());
+
+            pq.addAll(
+                    distanceMatrix.get(drone).entrySet()
+                            .stream()
+                            .filter(o -> !o.getKey().isInCluster())
+                            .toList()
+            );
 
             int addedDrones = 1;
             while (addedDrones < dronesPerCluster && !pq.isEmpty()) {
@@ -75,9 +88,6 @@ public class MyAlgorithm {
                 // Adding the current drone to the cluster and setting the clusterId fro the drone
                 cluster.addDrone(curDrone);
                 curDrone.setClusterId(cluster.clusterId);
-
-                // Skipping the drone for future precesses
-                processedDrones.add(curDrone);
             }
 
             // Adding the cluster to the list
@@ -87,9 +97,8 @@ public class MyAlgorithm {
         return clusters;
     }
 
-    // Cluster Head Selection
+    // Cluster Head Selection By Sourav
     public List<Drone> selectClusterHead(Cluster cluster) {
-
         int n = cluster.size();
         double[][] distanceMatrix = new double[n][n];
 
@@ -100,27 +109,42 @@ public class MyAlgorithm {
             }
         }
 
-        TreeMap<Double, Integer> mp = new TreeMap<>(Collections.reverseOrder());
-
+        List<Pair<Drone, Double>> boptList = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             double sumOfAllDistance = 0.0;
+
             for (int j = 0; j < n; j++) {
                 sumOfAllDistance += distanceMatrix[i][j];
             }
-            double trustValue = cluster.drones.get(i).trustValue;
-            mp.put((trustValue / sumOfAllDistance), i);
+
+            double boptVal = getBoptValue(cluster.drones.get(i), sumOfAllDistance);
+            boptList.add(new Pair<>(cluster.drones.get(i), boptVal));
         }
 
+        // sort by their bopt value
+        boptList.sort(Comparator.comparingDouble(a -> -a.second));
+
+        Drone clusterHead, clusterSubLeader = null;
+
+        clusterHead = boptList.get(0).first;
+        cluster.setLeader(clusterHead);
+
+        if (boptList.size() > 1) {
+            clusterSubLeader = boptList.get(1).first;
+            cluster.setSubLeader(clusterSubLeader);
+        }
+
+        // add top two drones which we calculate by their value
         List<Drone> headOfCluster = new ArrayList<>();
+        headOfCluster.add(clusterHead);
 
-        // add from map top two drones
-        for (Map.Entry<Double, Integer> entry : mp.entrySet()) {
-            if (headOfCluster.size() > 2) break;
-            headOfCluster.add(entry.getValue(), cluster.drones.get(entry.getValue()));
-        }
+        if (clusterSubLeader != null) headOfCluster.add(clusterSubLeader);
 
         return headOfCluster;
+    }
 
+    private double getBoptValue(Drone drone, double sumOfAllDistance) {
+        return (drone.trustValue / sumOfAllDistance);
     }
 
 
@@ -210,6 +234,7 @@ public class MyAlgorithm {
         double x2 = drone2.lat;
         double y2 = drone2.lon;
         double z2 = drone2.alt;
-        return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2) + pow(z2 - z1, 2));
+
+        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2) + Math.pow(z2 - z1, 2));
     }
 }
