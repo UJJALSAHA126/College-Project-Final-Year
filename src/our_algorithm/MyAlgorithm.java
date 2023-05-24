@@ -34,9 +34,9 @@ public class MyAlgorithm {
 
     private void sortDrones(List<Drone> drones) {
         drones.sort((a, b) -> {
-            if (a.lon != b.lon) return (int) (a.lon - b.lon);
-            if (a.lat != b.lat) return (int) (a.lat - b.lat);
-            return (int) (a.alt - b.alt);
+            if (a.lon != b.lon) return Double.compare(a.lon, b.lon);
+            if (a.lat != b.lat) return Double.compare(b.lat, a.lat);
+            return Double.compare(b.alt, a.alt);
         });
     }
 
