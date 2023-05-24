@@ -87,38 +87,59 @@ public class MyAlgorithm {
         return clusters;
     }
 
-    // Cluster Head Selection
-    public List<Drone> selectClusterHead(Cluster cluster) {
+    // Cluster Head Selection By Sourav
+    public List<Drone> selectClusterHead(Cluster cluster){
+
         int n = cluster.size();
         double[][] distanceMatrix = new double[n][n];
 
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                distanceMatrix[i][j] = euclideanDistanceOfDrones(cluster.drones.get(i), cluster.drones.get(j));
-                distanceMatrix[j][i] = distanceMatrix[i][j];
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(i==j)continue;
+
+                distanceMatrix[i][j] = euclideanDistanceOfDrones(cluster.drones.get(i),cluster.drones.get(j));
             }
         }
 
-        TreeMap<Double, Integer> mp = new TreeMap<>(Collections.reverseOrder());
 
-        for (int i = 0; i < n; i++) {
+        List<Pair<Drone,Double>> boptList = new ArrayList<>();
+
+        for(int i=0;i<n;i++){
             double sumOfAllDistance = 0.0;
-            for (int j = 0; j < n; j++) {
+            for(int j=0;j<n;j++) {
                 sumOfAllDistance += distanceMatrix[i][j];
             }
             double trustValue = cluster.drones.get(i).trustValue;
-            mp.put((trustValue / sumOfAllDistance), i);
+
+            double boptVal = getboptValue(trustValue,sumOfAllDistance);
+            boptList.add(new Pair<>(cluster.drones.get(i),boptVal));
         }
 
+        // sort by their bopt value
+        boptList.sort(Comparator.comparingDouble(a -> -a.second));
+
+        Drone clusterHead,clusterSubLeader  = null;
+
+        clusterHead = boptList.get(0).first;
+        cluster.setLeader(clusterHead);
+
+        if(boptList.size()>1) {
+            clusterSubLeader = boptList.get(1).first;
+            cluster.setSubLeader(clusterSubLeader);
+        }
+
+        // add top two drones which we calculate by their value
         List<Drone> headOfCluster = new ArrayList<>();
+        headOfCluster.add(clusterHead);
 
-        // add from map top two drones
-        for (Map.Entry<Double, Integer> entry : mp.entrySet()) {
-            if (headOfCluster.size() > 2) break;
-            headOfCluster.add(cluster.drones.get(entry.getValue()));
-        }
+        if(clusterSubLeader!=null)headOfCluster.add(clusterSubLeader);
 
         return headOfCluster;
+
+    }
+
+    private double getboptValue(double trustValue, double sumOfAllDistance) {
+        return trustValue/sumOfAllDistance;
     }
 
     private Map<Drone, Map<Drone, Double>> getDistanceMatrix(List<Drone> drones) {
