@@ -187,10 +187,10 @@ public class MyAlgorithm {
     }
 
     // Should be checked
-    private double getBoptValue(Drone drone, double sumOfDistances) {
-        double sqrtDist = Math.sqrt(sumOfDistances);
-        return (drone.trustValue) / sqrtDist;
-    }
+//    private double getBoptValue(Drone drone, double sumOfDistances) {
+//        double sqrtDist = Math.sqrt(sumOfDistances);
+//        return (drone.trustValue) / sqrtDist;
+//    }
 
     private double getSumOfDistances(Drone drone, Map<Drone, Map<Drone, Double>> dist) {
         try {
