@@ -56,4 +56,8 @@ public class Drone {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    public boolean isInCluster(){
+        return clusterId != -1;
+    }
 }
