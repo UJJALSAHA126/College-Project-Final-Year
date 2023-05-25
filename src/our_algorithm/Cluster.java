@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Cluster {
-    List<Drone> drones;
+    public List<Drone> drones;
     public final int clusterId;
     private Drone leader, subLeader;
 
